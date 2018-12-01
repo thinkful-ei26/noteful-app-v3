@@ -130,7 +130,7 @@ router.delete('/:id', (req, res, next) => {
 
   Promise.all([folderRemovePromise, noteRemovePromise])
     .then(() => {
-      res.status(204).end();
+      res.sendStatus(204);
     })
     .catch(err => {
       next(err);

@@ -60,7 +60,10 @@ router.get('/:id', (req, res, next) => {
     });
 });
 
+
+
 /* ========== POST/CREATE AN ITEM ========== */
+
 router.post('/', (req, res, next) => {
   const { title, content, folderId } = req.body;
 
@@ -78,6 +81,9 @@ router.post('/', (req, res, next) => {
   }
 
   const newNote = { title, content, folderId };
+  if (folderId === '') {
+    delete newNote.folderId;
+  }
 
   Note.create(newNote)
     .then(result => {
@@ -116,6 +122,11 @@ router.put('/:id', (req, res, next) => {
 
   const updateNote = { title, content, folderId };
 
+  if (folderId === '') {
+    delete updateNote.folderId;
+    updateNote.$unset = { folderId: '' };
+  }
+
   Note.findByIdAndUpdate(id, updateNote, { new: true })
     .then(result => {
       if (result) {
@@ -142,7 +153,7 @@ router.delete('/:id', (req, res, next) => {
 
   Note.findByIdAndRemove(id)
     .then(() => {
-      res.status(204).end();
+      res.sendStatus(204);
     })
     .catch(err => {
       next(err);
